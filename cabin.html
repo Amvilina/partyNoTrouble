@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Домик — Лесной отдых</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container inner">
+        <a class="logo" href="index.html">Лесной отдых</a>
+        <div class="site-header__actions">
+          <a
+            class="site-header__contact"
+            href="https://t.me/barbarianeccc"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Связаться</a>
+          <div class="site-header__booking" id="site-header-booking" hidden>
+            <p class="site-header__total" id="site-header-total" aria-live="polite"></p>
+            <button type="button" class="site-header__book-btn" id="site-header-book-btn">
+              Забронировать
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="cabin-page container" id="page-root">
+      <!-- заполняется скриптом -->
+    </main>
+
+    <div
+      id="booking-modal"
+      class="booking-modal"
+      hidden
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="booking-modal-title"
+    >
+      <button type="button" class="booking-modal__backdrop" tabindex="-1" aria-label="Закрыть" data-booking-close></button>
+      <div class="booking-modal__dialog">
+        <div class="booking-modal__head">
+          <h2 id="booking-modal-title" class="booking-modal__title">Забронировать</h2>
+          <button type="button" class="booking-modal__x" aria-label="Закрыть" data-booking-close>
+            ×
+          </button>
+        </div>
+        <p class="booking-modal__meta" id="booking-modal-meta"></p>
+        <form id="booking-modal-form" class="booking-modal__form" novalidate>
+          <label class="booking-modal__field">
+            <span class="booking-modal__label">Имя</span>
+            <input type="text" name="client_name" required autocomplete="name" maxlength="120" />
+          </label>
+          <label class="booking-modal__field">
+            <span class="booking-modal__label">Телефон</span>
+            <input
+              type="tel"
+              name="phone"
+              class="booking-modal__phone"
+              required
+              maxlength="18"
+              spellcheck="false"
+            />
+          </label>
+          <label class="booking-modal__field">
+            <span class="booking-modal__label">Email</span>
+            <input type="email" name="email" autocomplete="email" maxlength="120" />
+          </label>
+          <label class="booking-modal__field">
+            <span class="booking-modal__label">Комментарий</span>
+            <textarea name="comment" rows="3" maxlength="2000" placeholder="По желанию"></textarea>
+          </label>
+          <p class="booking-modal__err" id="booking-modal-err" hidden></p>
+          <div class="booking-modal__actions">
+            <button type="button" class="booking-modal__btn booking-modal__btn--ghost" data-booking-close>Отмена</button>
+            <button type="submit" class="booking-modal__btn booking-modal__btn--primary" id="booking-modal-submit">
+              Забронировать
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div
+      id="booking-success-modal"
+      class="booking-modal"
+      hidden
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="booking-success-title"
+    >
+      <button
+        type="button"
+        class="booking-modal__backdrop"
+        tabindex="-1"
+        aria-label="Закрыть"
+        data-booking-success-close
+      ></button>
+      <div class="booking-modal__dialog">
+        <div class="booking-modal__head">
+          <h2 id="booking-success-title" class="booking-modal__title">Спасибо</h2>
+          <button type="button" class="booking-modal__x" aria-label="Закрыть" data-booking-success-close>
+            ×
+          </button>
+        </div>
+        <div class="booking-modal__success-body">
+          <p class="booking-modal__success-text" id="booking-success-message"></p>
+          <div class="booking-modal__actions booking-modal__success-actions">
+            <button
+              type="button"
+              class="booking-modal__btn booking-modal__btn--primary"
+              data-booking-success-close
+            >
+              Хорошо
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container">
+        Разработано командой <a href="https://t.me/GCSSmanager" rel="noopener noreferrer" target="_blank">GCSS</a>
+      </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/booked.js"></script>
+    <script src="js/carousel.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/phone-ru.js"></script>
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+        const cabin = id && window.getCabinById ? window.getCabinById(id) : null;
+        const root = document.getElementById("page-root");
+
+        if (!cabin) {
+          root.innerHTML =
+            '<div class="not-found"><p>Такой домик не найден.</p><p><a href="index.html">Вернуться к списку</a></p></div>';
+          document.title = "Не найдено — Лесной отдых";
+          return;
+        }
+
+        document.title = cabin.title + " — Лесной отдых";
+
+        const specsHtml = cabin.specs
+          .map(
+            (s) =>
+              `<li><span>${s.label}</span><span>${s.value}</span></li>`
+          )
+          .join("");
+
+        const galleryHtml =
+          window.buildImageCarouselHtml &&
+          window.buildImageCarouselHtml(
+            window.getCabinImages(cabin),
+            cabin.title,
+            "img-carousel--hero"
+          );
+
+        function escAttr(s) {
+          return String(s == null ? "" : s)
+            .replace(/&/g, "&amp;")
+            .replace(/"/g, "&quot;")
+            .replace(/</g, "&lt;");
+        }
+
+        function escHtml(s) {
+          return String(s == null ? "" : s)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+        }
+
+        const mapEmbed =
+          window.buildYandexMapEmbedUrl && window.buildYandexMapEmbedUrl(cabin.coords);
+        const mapOpen =
+          window.buildYandexMapExternalUrl && window.buildYandexMapExternalUrl(cabin.coords);
+        const mapAddress =
+          cabin.location &&
+          `<p class="cabin-map__address"><strong>Адрес:</strong> ${escHtml(cabin.location)}</p>`;
+        const mapBlock =
+          mapEmbed &&
+          `<section class="cabin-map" aria-label="Расположение на карте">
+            <div class="cabin-map__head">Расположение</div>
+            ${mapAddress || ""}
+            <div class="cabin-map__frame-wrap">
+              <iframe
+                class="cabin-map__frame"
+                title="${escAttr(cabin.title + " на карте")}"
+                src="${mapEmbed}"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <a class="cabin-map__open" href="${mapOpen}" target="_blank" rel="noopener noreferrer">Открыть в Яндекс.Картах</a>
+          </section>`;
+
+        const extrasList = window.BOOKING_EXTRAS || [];
+        const extrasHtml = extrasList
+          .map(function (ex, ix) {
+            return (
+              '<label class="cabin-service">' +
+              '<input type="checkbox" name="extra-' +
+              escAttr(cabin.id) +
+              "-" +
+              ix +
+              '" value="' +
+              escAttr(ex.id) +
+              '" data-price="' +
+              ex.price +
+              '" autocomplete="off" />' +
+              '<span class="cabin-service__row">' +
+              '<span class="cabin-service__title">' +
+              escHtml(ex.title) +
+              "</span>" +
+              '<span class="cabin-service__price">+' +
+              ex.price.toLocaleString("ru-RU") +
+              " " +
+              escHtml(cabin.currency) +
+              "</span></span></label>"
+            );
+          })
+          .join("");
+        const extrasSectionHtml =
+          extrasList.length > 0
+            ? `<div class="cabin-services">
+                <h3 class="cabin-services__title">Дополнительно</h3>
+                <form class="cabin-services__form" autocomplete="off" onsubmit="return false" action="#">
+                  <div class="cabin-services__list" id="cabin-services-list">${extrasHtml}</div>
+                </form>
+              </div>`
+            : "";
+
+        const reviewsList = Array.isArray(cabin.reviews) ? cabin.reviews : [];
+        const reviewsHtml =
+          reviewsList.length > 0
+            ? `<details class="cabin-reviews">
+                <summary class="cabin-reviews__summary">
+                  <span class="cabin-reviews__summary-label">Отзывы об этом доме</span>
+                  <span class="cabin-reviews__summary-count">${reviewsList.length}</span>
+                </summary>
+                <ul class="cabin-reviews__list">${reviewsList
+                  .map(function (r) {
+                    return (
+                      '<li class="cabin-reviews__item">' +
+                      '<p class="cabin-reviews__text">' +
+                      escHtml(r.text) +
+                      "</p>" +
+                      '<p class="cabin-reviews__meta">' +
+                      '<span class="cabin-reviews__author">' +
+                      escHtml(r.author) +
+                      "</span>" +
+                      '<span class="cabin-reviews__date">' +
+                      escHtml(r.date) +
+                      "</span></p></li>"
+                    );
+                  })
+                  .join("")}</ul>
+              </details>`
+            : "";
+
+        root.innerHTML = `
+          <p class="breadcrumb"><a href="index.html">Домики</a> · ${cabin.title}</p>
+          <div class="cabin-layout">
+            <div class="cabin-headline">
+              <h1>${cabin.title}</h1>
+              <p class="price-tag">от ${cabin.pricePerNight.toLocaleString("ru-RU")} ${cabin.currency} за ночь</p>
+            </div>
+            <div class="cabin-media">
+              <div class="cabin-gallery">
+                ${galleryHtml || ""}
+              </div>
+              ${extrasSectionHtml}
+            </div>
+            <div class="cabin-calendar-wrap">
+              <div class="calendar-block">
+                <h2>Свободные даты</h2>
+                <div class="calendar-legend">
+                  <span><span class="dot dot--free"></span> свободно</span>
+                  <span><span class="dot dot--busy"></span> занято</span>
+                  <span><span class="dot dot--sel"></span> выбранные даты</span>
+                </div>
+                <div id="cal-summary" class="calendar-summary" aria-live="polite"></div>
+                <div class="calendar-nav">
+                  <button type="button" id="cal-prev" aria-label="Предыдущий месяц">←</button>
+                  <span class="month-label" id="cal-month"></span>
+                  <button type="button" id="cal-next" aria-label="Следующий месяц">→</button>
+                </div>
+                <div id="cal-grid"></div>
+              </div>
+              ${mapBlock || ""}
+            </div>
+          </div>
+          <div class="cabin-after">
+            <p class="description">${cabin.description}</p>
+            <ul class="specs">${specsHtml}</ul>
+            ${reviewsHtml}
+          </div>
+        `;
+
+        if (window.initAllImageCarousels) window.initAllImageCarousels(root);
+
+        const headerBookingEl = document.getElementById("site-header-booking");
+        const headerTotalEl = document.getElementById("site-header-total");
+        const headerBookBtn = document.getElementById("site-header-book-btn");
+        let lastSnap = {
+          checkIn: null,
+          checkOut: null,
+          lodgingTotal: 0,
+          currency: cabin.currency,
+        };
+
+        function extrasSum() {
+          var s = 0;
+          root.querySelectorAll("#cabin-services-list input[type=checkbox]:checked").forEach(function (cb) {
+            s += parseInt(cb.getAttribute("data-price"), 10) || 0;
+          });
+          return s;
+        }
+
+        /* «Итого» и «Забронировать» — только после выбора заезда и выезда */
+        function paintGrand() {
+          if (!headerBookingEl || !headerTotalEl) return;
+          if (!lastSnap.checkIn || !lastSnap.checkOut) {
+            headerBookingEl.hidden = true;
+            headerTotalEl.innerHTML = "";
+            return;
+          }
+          var total = lastSnap.lodgingTotal + extrasSum();
+          headerTotalEl.innerHTML =
+            "Итого: <strong class=\"site-header__total-sum\">" +
+            total.toLocaleString("ru-RU") +
+            " " +
+            lastSnap.currency +
+            "</strong>";
+          headerBookingEl.hidden = false;
+        }
+
+        var bookingModal = document.getElementById("booking-modal");
+        var bookingForm = document.getElementById("booking-modal-form");
+        var bookingMeta = document.getElementById("booking-modal-meta");
+        var bookingErr = document.getElementById("booking-modal-err");
+        var bookingSubmit = document.getElementById("booking-modal-submit");
+        var successModal = document.getElementById("booking-success-modal");
+        var successMessageEl = document.getElementById("booking-success-message");
+        var bookingPhoneInput = bookingForm ? bookingForm.querySelector('input[name="phone"]') : null;
+        if (bookingPhoneInput && window.attachRuPhoneInput) {
+          window.attachRuPhoneInput(bookingPhoneInput);
+        }
+
+        function fmtBookingDate(d) {
+          if (!d) return "—";
+          return new Intl.DateTimeFormat("ru-RU", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          }).format(d);
+        }
+
+        function nightsForSnap() {
+          if (!lastSnap.checkIn || !lastSnap.checkOut) return 0;
+          var ms = lastSnap.checkOut.getTime() - lastSnap.checkIn.getTime();
+          var n = Math.round(ms / 86400000);
+          return n > 0 ? n : 0;
+        }
+
+        function selectedExtrasTitles() {
+          var list = root.querySelector("#cabin-services-list");
+          if (!list) return [];
+          var lines = [];
+          list.querySelectorAll('input[type="checkbox"]:checked').forEach(function (cb) {
+            var row = cb.closest(".cabin-service");
+            var title = row && row.querySelector(".cabin-service__title");
+            lines.push(title ? title.textContent.trim() : String(cb.value));
+          });
+          return lines;
+        }
+
+        function buildBookingLetter() {
+          var total = lastSnap.lodgingTotal + extrasSum();
+          var lines = [
+            "Домик: " + cabin.title + " (id: " + cabin.id + ")",
+            "Заезд: " + fmtBookingDate(lastSnap.checkIn),
+            "Выезд: " + fmtBookingDate(lastSnap.checkOut),
+            "Ночей: " + nightsForSnap(),
+            "Сумма проживания + допы: " + total.toLocaleString("ru-RU") + " " + lastSnap.currency,
+          ];
+          var ex = selectedExtrasTitles();
+          if (ex.length) lines.push("Дополнительно: " + ex.join(", "));
+          return lines.join("\n");
+        }
+
+        function closeBookingSuccessModal() {
+          if (!successModal) return;
+          successModal.hidden = true;
+          successModal.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("booking-modal-open");
+        }
+
+        function openBookingSuccessModal(message) {
+          if (bookingForm) bookingForm.reset();
+          closeBookingModal();
+          if (!successModal || !successMessageEl) return;
+          successMessageEl.textContent = message;
+          successModal.hidden = false;
+          successModal.setAttribute("aria-hidden", "false");
+          document.body.classList.add("booking-modal-open");
+          var okBtn = successModal.querySelector(".booking-modal__success-actions .booking-modal__btn--primary");
+          if (okBtn) okBtn.focus();
+        }
+
+        function openBookingModal() {
+          if (!lastSnap.checkIn || !lastSnap.checkOut) return;
+          if (!bookingModal || !bookingForm) return;
+          if (successModal && !successModal.hidden) closeBookingSuccessModal();
+          bookingMeta.textContent = buildBookingLetter();
+          bookingErr.hidden = true;
+          bookingForm.reset();
+          bookingModal.hidden = false;
+          bookingModal.setAttribute("aria-hidden", "false");
+          document.body.classList.add("booking-modal-open");
+          var first = bookingForm.querySelector('input[name="client_name"]');
+          if (first) first.focus();
+        }
+
+        function closeBookingModal() {
+          if (!bookingModal) return;
+          bookingModal.hidden = true;
+          bookingModal.setAttribute("aria-hidden", "true");
+          document.body.classList.remove("booking-modal-open");
+          if (bookingErr) bookingErr.hidden = true;
+        }
+
+        if (headerBookBtn) {
+          headerBookBtn.addEventListener("click", function () {
+            openBookingModal();
+          });
+        }
+
+        if (bookingModal) {
+          bookingModal.querySelectorAll("[data-booking-close]").forEach(function (el) {
+            el.addEventListener("click", closeBookingModal);
+          });
+        }
+
+        if (successModal) {
+          successModal.querySelectorAll("[data-booking-success-close]").forEach(function (el) {
+            el.addEventListener("click", closeBookingSuccessModal);
+          });
+        }
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key !== "Escape") return;
+          if (successModal && !successModal.hidden) {
+            closeBookingSuccessModal();
+            return;
+          }
+          if (!bookingModal || bookingModal.hidden) return;
+          closeBookingModal();
+        });
+
+        if (bookingForm && bookingSubmit) {
+          bookingForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            bookingErr.hidden = true;
+            var fd = new FormData(bookingForm);
+            var name = String(fd.get("client_name") || "").trim();
+            var phoneDisplay = String(fd.get("phone") || "").trim();
+            var email = String(fd.get("email") || "").trim();
+            var comment = String(fd.get("comment") || "").trim();
+            if (!name) {
+              bookingErr.textContent = "Укажите имя.";
+              bookingErr.hidden = false;
+              return;
+            }
+            var phoneDigits =
+              window.getRuPhoneDigitsNormalized && window.getRuPhoneDigitsNormalized(phoneDisplay);
+            if (!window.isValidRuPhone || !window.isValidRuPhone(phoneDigits)) {
+              bookingErr.textContent =
+                "Введите номер полностью в формате +7 (999) 123-45-67 (11 цифр).";
+              bookingErr.hidden = false;
+              if (bookingPhoneInput) bookingPhoneInput.focus();
+              return;
+            }
+            var phone = window.formatRuPhoneDisplay
+              ? window.formatRuPhoneDisplay(phoneDigits)
+              : phoneDisplay;
+            var notify = window.BOOKING_NOTIFY || {};
+            var letter = buildBookingLetter();
+            var fullMessage =
+              letter +
+              "\n\n—\nКлиент:\nИмя: " +
+              name +
+              "\nТелефон: " +
+              phone +
+              (email ? "\nEmail: " + email : "") +
+              (comment ? "\nКомментарий: " + comment : "");
+
+            if (notify.web3formsAccessKey) {
+              if (!email) {
+                bookingErr.textContent = "Укажите email — так менеджер сможет ответить.";
+                bookingErr.hidden = false;
+                return;
+              }
+              bookingSubmit.disabled = true;
+              fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  access_key: notify.web3formsAccessKey,
+                  subject: "Бронь: " + cabin.title,
+                  name: name,
+                  email: email,
+                  phone: phone,
+                  message: fullMessage,
+                }),
+              })
+                .then(function (res) {
+                  return res.json();
+                })
+                .then(function (data) {
+                  if (data && data.success) {
+                    openBookingSuccessModal("Заявка отправлена. Менеджер свяжется с вами.");
+                  } else {
+                    bookingErr.textContent =
+                      (data && data.message) ||
+                      "Не удалось отправить. Попробуйте позже или напишите в Telegram.";
+                    bookingErr.hidden = false;
+                  }
+                })
+                .catch(function () {
+                  bookingErr.textContent = "Ошибка сети. Попробуйте позже.";
+                  bookingErr.hidden = false;
+                })
+                .then(function () {
+                  bookingSubmit.disabled = false;
+                });
+              return;
+            }
+
+            if (notify.managerEmail) {
+              var subj = encodeURIComponent("Бронь: " + cabin.title);
+              var body = encodeURIComponent(fullMessage);
+              window.location.href =
+                "mailto:" + notify.managerEmail + "?subject=" + subj + "&body=" + body;
+              closeBookingModal();
+              return;
+            }
+
+            bookingErr.textContent =
+              "Укажите в data.js в BOOKING_NOTIFY ключ web3formsAccessKey (сайт web3forms.com) или managerEmail.";
+            bookingErr.hidden = false;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(fullMessage).then(function () {
+                openBookingSuccessModal(
+                  "Текст заявки скопирован в буфер — отправьте его менеджеру (например, в Telegram)."
+                );
+              });
+            }
+          });
+        }
+
+        var filterSeed =
+          (window.readCabinPageFilterFromQuery && window.readCabinPageFilterFromQuery()) ||
+          (window.readStoredMainPageFilterRange && window.readStoredMainPageFilterRange());
+
+        /* Один набор отмеченных допов на вкладку: переносится между страницами домиков */
+        var EXTRAS_SELECTION_KEY = "lesnoy:booking-extras-ids";
+
+        function readStoredExtrasIds() {
+          try {
+            var raw = sessionStorage.getItem(EXTRAS_SELECTION_KEY);
+            if (!raw) return [];
+            var arr = JSON.parse(raw);
+            return Array.isArray(arr)
+              ? arr.filter(function (x) {
+                  return typeof x === "string" && x.length;
+                })
+              : [];
+          } catch (e) {
+            return [];
+          }
+        }
+
+        function persistExtrasSelection() {
+          try {
+            var ids = [];
+            var list = root.querySelector("#cabin-services-list");
+            if (list) {
+              list.querySelectorAll('input[type="checkbox"]:checked').forEach(function (cb) {
+                if (cb.value) ids.push(cb.value);
+              });
+            }
+            sessionStorage.setItem(EXTRAS_SELECTION_KEY, JSON.stringify(ids));
+          } catch (e) {}
+        }
+
+        function restoreExtrasSelection() {
+          var saved = readStoredExtrasIds();
+          if (!saved.length) return;
+          var want = new Set(saved);
+          var list = root.querySelector("#cabin-services-list");
+          if (!list) return;
+          list.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+            if (want.has(cb.value)) cb.checked = true;
+          });
+        }
+
+        var servicesList = root.querySelector("#cabin-services-list");
+        if (servicesList) {
+          restoreExtrasSelection();
+          servicesList.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+            cb.addEventListener("change", function () {
+              persistExtrasSelection();
+              paintGrand();
+            });
+          });
+        }
+
+        window.initAvailabilityCalendar({
+          navPrev: document.getElementById("cal-prev"),
+          navNext: document.getElementById("cal-next"),
+          monthEl: document.getElementById("cal-month"),
+          gridEl: document.getElementById("cal-grid"),
+          summaryEl: document.getElementById("cal-summary"),
+          pricePerNight: cabin.pricePerNight,
+          currency: cabin.currency,
+          initialCheckIn: filterSeed ? filterSeed.checkIn : null,
+          initialCheckOut: filterSeed ? filterSeed.checkOut : null,
+          onBookingChange: function (snap) {
+            lastSnap = snap;
+            paintGrand();
+          },
+          getBookedDaysForMonth: function (year, month) {
+            return window.getCabinBookedDaysInMonth(cabin, year, month);
+          },
+        });
+      })();
+    </script>
+  </body>
+</html>

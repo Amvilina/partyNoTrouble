@@ -1,0 +1,224 @@
+/**
+ * Демо-данные домиков. Позже можно заменить на API.
+ */
+window.CABINS_DATA = [
+  {
+    id: "bereza",
+    title: "Домик «Берёзка»",
+    short: "У озера, терраса, до 4 гостей",
+    pricePerNight: 5500,
+    currency: "₽",
+    location: "Пятигорск, ул. Пестова, 9",
+    coords: { lat: 44.028785, lng: 43.068541 },
+    images: [
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+    ],
+    description:
+      "Уютный деревянный дом у воды: большие окна, печь-камин, полностью оборудованная кухня. Идеально для пары или семьи с детьми. На террасе — мангал и мебель.",
+    specs: [
+      { label: "Гостей", value: "до 4" },
+      { label: "Спальни", value: "2" },
+      { label: "Площадь", value: "48 м²" },
+      { label: "Wi‑Fi", value: "да" },
+    ],
+    reviews: [
+      {
+        author: "Анна К.",
+        date: "март 2025",
+        text: "Озеро рядом — супер. Терраса и мангал пользовались каждый вечер. В доме тепло, кухня со всем необходимым.",
+      },
+      {
+        author: "Сергей",
+        date: "январь 2025",
+        text: "Приехали вдвоём с ребёнком. Тихо, чисто. Единственное — заранее уточняйте дорогу последние километры.",
+      },
+    ],
+  },
+  {
+    id: "elka",
+    title: "Домик «Ёлочка»",
+    short: "В соснах, саун на участке, до 6 гостей",
+    pricePerNight: 7200,
+    currency: "₽",
+    location: "Ленинградская обл., пос. Сосновка, тропа к озеру, дом 3",
+    coords: { lat: 60.11, lng: 30.18 },
+    images: [
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+    ],
+    description:
+      "Двухэтажный дом в тени сосен: просторная гостиная, саун на территории, детская зона. Подходит для компании друзей или большой семьи.",
+    specs: [
+      { label: "Гостей", value: "до 6" },
+      { label: "Спальни", value: "3" },
+      { label: "Площадь", value: "72 м²" },
+      { label: "Сауна", value: "да" },
+    ],
+    reviews: [
+      {
+        author: "Команда из 5 человек",
+        date: "февраль 2025",
+        text: "Сауна после леса — то, что нужно. Гостиная вместительная, спален хватило. Хозяева отзывчивые.",
+      },
+      {
+        author: "Марина",
+        date: "ноябрь 2024",
+        text: "Большой дом, фото соответствуют. Детям понравилась лестница и окна во двор.",
+      },
+    ],
+  },
+  {
+    id: "romashka",
+    title: "Домик «Ромашка»",
+    short: "Компактный, для двоих, с видом на луг",
+    pricePerNight: 3800,
+    currency: "₽",
+    location: "Ленинградская обл., пос. Сосновка, Полевая, 7",
+    coords: { lat: 60.09, lng: 30.22 },
+    images: [
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+      "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=800&q=80",
+      "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80",
+    ],
+    description:
+      "Небольшой дом для романтического отдыха: панорамное остекление, кухонный уголок, душ. Рядом тропы для прогулок.",
+    specs: [
+      { label: "Гостей", value: "до 2" },
+      { label: "Спальни", value: "1" },
+      { label: "Площадь", value: "28 м²" },
+      { label: "Парковка", value: "1 место" },
+    ],
+    reviews: [
+      {
+        author: "Илья и Оля",
+        date: "апрель 2025",
+        text: "Уютно для двоих, вид из окна на луг. Компактно, но ничего лишнего. Вернёмся.",
+      },
+      {
+        author: "Илья и Оля",
+        date: "апрель 2025",
+        text: "Уютно для двоих, вид из окна на луг. Компактно, но ничего лишнего. Вернёмся.",
+      },
+      {
+        author: "Илья и Оля",
+        date: "апрель 2025",
+        text: "Уютно для двоих, вид из окна на луг. Компактно, но ничего лишнего. Вернёмся.",
+      },
+      {
+        author: "Илья и Оля",
+        date: "апрель 2025",
+        text: "Уютно для двоих, вид из окна на луг. Компактно, но ничего лишнего. Вернёмся.",
+      },
+    ],
+  },
+
+];
+
+/** Доп. услуги к брони (демо; позже можно вынести в карточку домика). */
+window.BOOKING_EXTRAS = [
+  { id: "hookah", title: "Кальян", price: 2000 },
+  { id: "alcohol", title: "Закупка алкоголя под заказ", price: 1500 },
+  { id: "food", title: "Закупка продуктов", price: 2500 },
+  { id: "bbq", title: "Жарка мяса / гриль", price: 4000 },
+  { id: "games", title: "Настольные игры (набор)", price: 800 },
+];
+
+/**
+ * Заявка «Забронировать» (модальное окно на странице домика).
+ * Укажите один из вариантов:
+ * - web3formsAccessKey — ключ с https://web3forms.com (письмо на почту менеджера);
+ * - managerEmail — если ключа нет, откроется почтовый клиент с заполненным текстом.
+ */
+window.BOOKING_NOTIFY = {
+  web3formsAccessKey: "a015dbfd-6282-49cf-a7e8-394afe434f48",
+  managerEmail: "",
+};
+
+/**
+ * Виджет Яндекс.Карт (iframe): центр и метка по coords { lat, lng }.
+ * У Яндекса в ll и pt сначала долгота, потом широта.
+ */
+window.buildYandexMapEmbedUrl = function (coords, zoom) {
+  if (!coords || typeof coords.lat !== "number" || typeof coords.lng !== "number") {
+    return "";
+  }
+  var z = zoom == null ? 14 : zoom;
+  var lat = coords.lat;
+  var lng = coords.lng;
+  var ll = lng + "," + lat;
+  var pt = lng + "," + lat + ",pm2rdm";
+  return (
+    "https://yandex.ru/map-widget/v1/?ll=" +
+    encodeURIComponent(ll) +
+    "&z=" +
+    z +
+    "&pt=" +
+    encodeURIComponent(pt)
+  );
+};
+
+/** Ссылка «Открыть в Яндекс.Картах» в полноэкранной карте. */
+window.buildYandexMapExternalUrl = function (coords, zoom) {
+  if (!coords || typeof coords.lat !== "number" || typeof coords.lng !== "number") {
+    return "";
+  }
+  var z = zoom == null ? 15 : zoom;
+  return (
+    "https://yandex.ru/maps/?pt=" +
+    encodeURIComponent(coords.lng + "," + coords.lat) +
+    "&z=" +
+    z +
+    "&l=map"
+  );
+};
+
+/** Список URL фото домика (для карусели). */
+window.getCabinImages = function (c) {
+  if (!c) return [];
+  if (Array.isArray(c.images) && c.images.length) return c.images;
+  if (c.image) return [c.image];
+  return [];
+};
+
+window.getCabinById = function (id) {
+  return window.CABINS_DATA.find((c) => c.id === id) || null;
+};

@@ -1,0 +1,62 @@
+/* Сетка карточек домиков (главная) */
+.cabins-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding-bottom: 4rem;
+}
+
+.cabin-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 8px 28px var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.cabin-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 36px var(--color-shadow-lg);
+  border-color: var(--color-card-hover-border);
+}
+
+.cabin-card:focus-within {
+  outline: 2px solid var(--accent-green-deep);
+  outline-offset: 3px;
+}
+
+a.cabin-card__body {
+  display: block;
+  padding: 1.15rem 1.25rem 1.4rem;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a.cabin-card__body:hover {
+  text-decoration: none;
+}
+
+a.cabin-card__body:focus-visible {
+  outline: none;
+}
+
+.cabin-card__body .cabin-card__title {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.cabin-card__body .cabin-card__meta {
+  margin: 0 0 0.85rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.cabin-card__body .cabin-card__price {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-price);
+  font-size: 0.95rem;
+}

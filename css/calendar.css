@@ -1,0 +1,212 @@
+/* Блок календаря занятости */
+.calendar-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.15rem;
+  box-shadow: 0 8px 28px var(--shadow);
+}
+
+.calendar-block h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.calendar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.calendar-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.dot--free {
+  background: var(--color-cal-legend-free);
+  border: 1px solid var(--accent-green);
+}
+
+.dot--busy {
+  background: var(--color-cal-legend-busy);
+  border: 1px solid var(--accent-blue-deep);
+}
+
+.dot--sel {
+  background: color-mix(in srgb, var(--accent-green-deep) 35%, var(--c-sage-pale));
+  border: 1px solid var(--accent-green-deep);
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-nav button {
+  font-family: inherit;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  padding: 0.32rem 0.65rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.calendar-nav button:hover {
+  background: var(--bg);
+}
+
+.calendar-nav .month-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  text-align: center;
+  font-size: 0.78rem;
+}
+
+.calendar-grid .weekday {
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 0.2rem 0;
+  font-size: 0.74rem;
+}
+
+/* Ячейки шире, чем выше — меньше высота блока при той же ширине колонок */
+.calendar-grid .day {
+  aspect-ratio: 1.35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  font-size: 0.82rem;
+  border: 1px solid transparent;
+}
+
+.calendar-grid .day--empty {
+  visibility: hidden;
+}
+
+.calendar-grid .day--free {
+  background: var(--color-cal-day-free-bg);
+  border-color: var(--color-cal-day-free-border);
+  cursor: pointer;
+}
+
+.calendar-grid .day--free:focus-visible {
+  outline: 2px solid var(--accent-green-deep);
+  outline-offset: 1px;
+}
+
+/* Весь выбранный диапазон — одинаковый цвет (края и дни посередине) */
+.calendar-grid .day--free.day--sel-start,
+.calendar-grid .day--free.day--sel-end,
+.calendar-grid .day--free.day--sel-between {
+  background: color-mix(in srgb, var(--accent-green-deep) 38%, var(--c-sage-pale));
+  border-color: var(--accent-green-deep);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.calendar-grid .day--busy {
+  background: var(--color-cal-day-busy-bg);
+  border-color: var(--color-cal-day-busy-border);
+  color: var(--text-muted);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.calendar-grid .day--past {
+  opacity: 0.35;
+  background: var(--color-cal-day-past-bg);
+  cursor: not-allowed;
+}
+
+.calendar-summary {
+  margin: 0 0 0.65rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 0.82rem;
+  line-height: 1.35;
+  box-sizing: border-box;
+  /* Две строки (даты + ночи) — стабильная высота */
+  min-height: 3.85rem;
+}
+
+.calendar-summary[hidden] {
+  display: none !important;
+}
+
+.calendar-summary__inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.12rem;
+  min-height: 2.85rem;
+}
+
+.calendar-summary__row {
+  margin: 0;
+  min-height: 1.3em;
+  line-height: 1.35;
+  color: var(--text-muted);
+  overflow-wrap: break-word;
+}
+
+.calendar-summary__dates strong,
+.calendar-summary__nights strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.calendar-summary__nights {
+  font-size: 0.84rem;
+}
+
+.calendar-summary__placeholder {
+  color: var(--text-muted);
+  opacity: 0.55;
+  font-size: 0.82rem;
+}
+
+.calendar-summary__sep {
+  color: var(--text-muted);
+  opacity: 0.65;
+  user-select: none;
+}
+
+.calendar-summary__hint {
+  color: var(--text-muted);
+  font-size: inherit;
+}
+
+.calendar-summary__hint strong {
+  color: var(--text);
+}
+
+.calendar-summary__error {
+  color: var(--accent-green-deep);
+  font-weight: 600;
+  font-size: 0.88rem;
+}

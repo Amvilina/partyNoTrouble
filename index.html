@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Лесной отдых — домики</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container inner">
+        <a class="logo" href="index.html">Лесной отдых</a>
+        <div class="site-header__actions">
+          <a
+            class="site-header__contact"
+            href="https://t.me/barbarianeccc"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Связаться</a>
+          <div class="site-header__booking" id="site-header-booking" hidden>
+            <p class="site-header__total" id="site-header-total" aria-live="polite"></p>
+            <button type="button" class="site-header__book-btn" id="site-header-book-btn">
+              Забронировать
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero container">
+        <h1>Домики для спокойного отдыха</h1>
+        <p>
+          Выберите домик, посмотрите описание, цену и свободные даты. Скоро здесь
+          появится бронь и дополнительные услуги.
+        </p>
+      </section>
+
+      <section class="container cabins-section">
+        <div class="cabins-toolbar">
+          <button
+            type="button"
+            class="cabins-filter-toggle"
+            id="cabins-filter-toggle"
+            aria-expanded="false"
+            aria-controls="cabins-filter-panel"
+          >
+            Подобрать по датам
+          </button>
+          <button type="button" class="cabins-filter-reset" id="cabins-filter-reset" hidden>
+            Сбросить фильтр
+          </button>
+          <span class="cabins-filter-status" id="cabins-filter-status" hidden></span>
+        </div>
+
+        <div id="cabins-filter-panel" class="cabins-filter-panel" hidden>
+          <div class="calendar-block calendar-block--filter">
+            <div class="cabins-filter-layout">
+              <div class="cabins-filter-layout__calendar">
+                <div class="calendar-nav">
+                  <button type="button" id="idx-cal-prev" aria-label="Предыдущий месяц">←</button>
+                  <span class="month-label" id="idx-cal-month"></span>
+                  <button type="button" id="idx-cal-next" aria-label="Следующий месяц">→</button>
+                </div>
+                <div id="idx-cal-grid"></div>
+              </div>
+              <aside class="cabins-filter-layout__aside" aria-label="Подсказки и выбранные даты">
+                <h2>Когда планируете отдых?</h2>
+                <p class="cabins-filter-lead">
+                  Выберите заезд и выезд — в списке останутся только домики без пересечения с занятыми датами.
+                </p>
+                <div class="calendar-legend">
+                  <span><span class="dot dot--free"></span> можно выбрать</span>
+                  <span><span class="dot dot--sel"></span> выбранный период</span>
+                </div>
+                <div id="idx-cal-summary" class="calendar-summary" aria-live="polite"></div>
+              </aside>
+            </div>
+          </div>
+        </div>
+
+        <div id="cabins-empty-filter" class="cabins-empty-filter" hidden>
+          На выбранные даты все домики заняты. Попробуйте другие дни или сбросьте фильтр.
+        </div>
+        <div class="cabins-grid" id="cabins-root"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        Разработано командой <a href="https://t.me/GCSSmanager" rel="noopener noreferrer" target="_blank">GCSS</a>
+      </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/booked.js"></script>
+    <script src="js/carousel.js"></script>
+    <script src="js/calendar.js"></script>
+    <script>
+      (function () {
+        var root = document.getElementById("cabins-root");
+        var panel = document.getElementById("cabins-filter-panel");
+        var toggleBtn = document.getElementById("cabins-filter-toggle");
+        var resetBtn = document.getElementById("cabins-filter-reset");
+        var statusEl = document.getElementById("cabins-filter-status");
+        var emptyEl = document.getElementById("cabins-empty-filter");
+        if (!root || !window.CABINS_DATA || !window.buildImageCarouselHtml) return;
+
+        root.innerHTML = window.CABINS_DATA.map(function (c) {
+          var images = window.getCabinImages(c);
+          var gallery =
+            images.length && window.buildImageCarouselHtml(images, c.title, "img-carousel--card");
+          var href = "cabin.html?id=" + encodeURIComponent(c.id);
+          return (
+            '<div class="cabin-card" data-cabin-id="' +
+            String(c.id).replace(/"/g, "") +
+            '" data-cabin-url="' +
+            href +
+            '">' +
+            (gallery || "") +
+            '<a class="cabin-card__body" href="' +
+            href +
+            '">' +
+            '<h3 class="cabin-card__title">' +
+            c.title +
+            "</h3>" +
+            '<p class="cabin-card__meta">' +
+            c.short +
+            "</p>" +
+            '<p class="cabin-card__price">от ' +
+            c.pricePerNight.toLocaleString("ru-RU") +
+            " " +
+            c.currency +
+            " / ночь</p>" +
+            "</a></div>"
+          );
+        }).join("");
+
+        root.addEventListener("click", function (e) {
+          var card = e.target.closest(".cabin-card");
+          if (!card) return;
+          var url = card.getAttribute("data-cabin-url");
+          if (!url) return;
+          if (e.target.closest("a.cabin-card__body")) return;
+          if (e.target.closest(".img-carousel__dot")) return;
+          if (!e.target.closest(".img-carousel__viewport")) return;
+          window.location.href = url;
+        });
+
+        if (window.initAllImageCarousels) window.initAllImageCarousels(root);
+
+        var filterCalApi = null;
+        var filterCalInited = false;
+        var lastFilterSnap = { checkIn: null, checkOut: null };
+
+        function loadStoredFilter() {
+          var r = window.readStoredMainPageFilterRange && window.readStoredMainPageFilterRange();
+          if (!r) return null;
+          return {
+            checkIn: r.checkIn,
+            checkOut: r.checkOut,
+            panelOpen: r.panelOpen,
+          };
+        }
+
+        function persistFilter(checkIn, checkOut) {
+          try {
+            if (checkIn && checkOut && window.toLesnoyLocalYMD && window.LESNOY_MAIN_FILTER_STORAGE_KEY) {
+              sessionStorage.setItem(
+                window.LESNOY_MAIN_FILTER_STORAGE_KEY,
+                JSON.stringify({
+                  in: window.toLesnoyLocalYMD(checkIn),
+                  out: window.toLesnoyLocalYMD(checkOut),
+                  panelOpen: panel ? !panel.hidden : false,
+                })
+              );
+            } else if (window.LESNOY_MAIN_FILTER_STORAGE_KEY) {
+              sessionStorage.removeItem(window.LESNOY_MAIN_FILTER_STORAGE_KEY);
+            }
+          } catch (e) {}
+        }
+
+        function updateCabinCardHrefs(checkIn, checkOut) {
+          if (!window.toLesnoyLocalYMD) return;
+          root.querySelectorAll(".cabin-card").forEach(function (card) {
+            var id = card.getAttribute("data-cabin-id");
+            if (!id) return;
+            var href = "cabin.html?id=" + encodeURIComponent(id);
+            if (checkIn && checkOut) {
+              href +=
+                "&from=" +
+                encodeURIComponent(window.toLesnoyLocalYMD(checkIn)) +
+                "&to=" +
+                encodeURIComponent(window.toLesnoyLocalYMD(checkOut));
+            }
+            card.setAttribute("data-cabin-url", href);
+            var link = card.querySelector("a.cabin-card__body");
+            if (link) link.setAttribute("href", href);
+          });
+        }
+
+        function applyCabinFilter(checkIn, checkOut) {
+          var cards = root.querySelectorAll(".cabin-card");
+          var hasRange = checkIn && checkOut;
+          if (!hasRange) {
+            cards.forEach(function (card) {
+              card.classList.remove("cabin-card--filtered-out");
+            });
+            emptyEl.hidden = true;
+            resetBtn.hidden = true;
+            statusEl.hidden = true;
+            statusEl.textContent = "";
+            updateCabinCardHrefs(null, null);
+            return;
+          }
+
+          var visible = 0;
+          cards.forEach(function (card) {
+            var id = card.getAttribute("data-cabin-id");
+            var cabin = id && window.getCabinById ? window.getCabinById(id) : null;
+            var free =
+              cabin && window.cabinIsFreeForStay
+                ? window.cabinIsFreeForStay(cabin, checkIn, checkOut)
+                : false;
+            if (free) {
+              card.classList.remove("cabin-card--filtered-out");
+              visible++;
+            } else {
+              card.classList.add("cabin-card--filtered-out");
+            }
+          });
+
+          resetBtn.hidden = false;
+          var fmt = new Intl.DateTimeFormat("ru-RU", {
+            day: "numeric",
+            month: "short",
+          });
+          statusEl.textContent =
+            "Период: " + fmt.format(checkIn) + " — " + fmt.format(checkOut) + ". Свободных: " + visible + ".";
+          statusEl.hidden = false;
+          emptyEl.hidden = visible > 0;
+          updateCabinCardHrefs(checkIn, checkOut);
+        }
+
+        function ensureFilterCalendar() {
+          if (filterCalInited || !window.initAvailabilityCalendar) return;
+          filterCalInited = true;
+          var stored = loadStoredFilter();
+          if (stored && stored.panelOpen && panel && toggleBtn) {
+            panel.hidden = false;
+            toggleBtn.setAttribute("aria-expanded", "true");
+            toggleBtn.textContent = "Скрыть календарь";
+          }
+          filterCalApi = window.initAvailabilityCalendar({
+            navPrev: document.getElementById("idx-cal-prev"),
+            navNext: document.getElementById("idx-cal-next"),
+            monthEl: document.getElementById("idx-cal-month"),
+            gridEl: document.getElementById("idx-cal-grid"),
+            summaryEl: document.getElementById("idx-cal-summary"),
+            pricePerNight: 0,
+            currency: "₽",
+            getBookedDaysForMonth: function () {
+              return [];
+            },
+            initialCheckIn: stored ? stored.checkIn : null,
+            initialCheckOut: stored ? stored.checkOut : null,
+            onBookingChange: function (snap) {
+              lastFilterSnap = snap;
+              persistFilter(snap.checkIn, snap.checkOut);
+              applyCabinFilter(snap.checkIn, snap.checkOut);
+            },
+          });
+        }
+
+        ensureFilterCalendar();
+
+        if (toggleBtn && panel) {
+          toggleBtn.addEventListener("click", function () {
+            ensureFilterCalendar();
+            var opening = panel.hidden;
+            panel.hidden = !opening;
+            toggleBtn.setAttribute("aria-expanded", opening ? "true" : "false");
+            toggleBtn.textContent = opening ? "Скрыть календарь" : "Подобрать по датам";
+            if (lastFilterSnap.checkIn && lastFilterSnap.checkOut) {
+              persistFilter(lastFilterSnap.checkIn, lastFilterSnap.checkOut);
+            }
+          });
+        }
+
+        if (resetBtn) {
+          resetBtn.addEventListener("click", function () {
+            if (filterCalApi && filterCalApi.clearSelection) filterCalApi.clearSelection();
+            else applyCabinFilter(null, null);
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>

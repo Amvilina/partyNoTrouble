@@ -1,0 +1,69 @@
+/**
+ * Единственный источник цветов и темы.
+ * Базовых оттенков немного; остальное — color-mix от них.
+ */
+:root {
+  /* ——— Базовая палитра (задаётся только здесь) ——— */
+  --c-ink: #2a3d42;
+  --c-muted: #5c7570;
+  --c-green: #5a9a8a;
+  --c-green-soft: #7cb8a8;
+  --c-teal: #6ba8be;
+  --c-teal-soft: #8ec5d6;
+  --c-sage: #b8d2c6;
+  --c-sage-pale: #dcebe3;
+  --c-sage-mist: #e8f2ec;
+  --c-white: #ffffff;
+
+  /* ——— Семантика (производные) ——— */
+  --page-gradient: linear-gradient(
+    165deg,
+    var(--c-green-soft) 0%,
+    var(--c-sage) 42%,
+    var(--c-teal) 100%
+  );
+
+  --color-header-bg: color-mix(in srgb, var(--c-sage-pale) 72%, transparent);
+  --color-footer-bg: color-mix(in srgb, var(--c-sage-pale) 55%, transparent);
+
+  --color-border: color-mix(in srgb, var(--c-green) 22%, transparent);
+  --color-shadow: color-mix(in srgb, var(--c-ink) 8%, transparent);
+  --color-shadow-lg: color-mix(in srgb, var(--c-ink) 18%, transparent);
+  --color-card-hover-border: color-mix(in srgb, var(--c-green) 45%, transparent);
+
+  --color-tag-bg: color-mix(in srgb, var(--c-green-soft) 25%, transparent);
+  --color-price: color-mix(in srgb, var(--c-ink) 42%, var(--c-green));
+
+  --color-cal-legend-free: color-mix(in srgb, var(--c-green-soft) 45%, transparent);
+  --color-cal-legend-busy: color-mix(in srgb, var(--c-teal-soft) 50%, transparent);
+  --color-cal-day-free-bg: color-mix(in srgb, var(--c-green-soft) 28%, transparent);
+  --color-cal-day-free-border: color-mix(in srgb, var(--c-green-soft) 40%, transparent);
+  --color-cal-day-busy-bg: color-mix(in srgb, var(--c-teal-soft) 35%, transparent);
+  --color-cal-day-busy-border: color-mix(in srgb, var(--c-teal) 45%, transparent);
+  --color-cal-day-past-bg: color-mix(in srgb, var(--c-sage-mist) 70%, var(--c-white));
+
+  --color-carousel-strip: color-mix(in srgb, var(--c-ink) 6%, transparent);
+  --color-carousel-strip-hero: color-mix(in srgb, var(--c-ink) 8%, transparent);
+  --color-carousel-dot: color-mix(in srgb, var(--c-ink) 28%, transparent);
+  --color-carousel-dot-hover: color-mix(in srgb, var(--c-ink) 42%, transparent);
+  --color-carousel-dot-active: color-mix(in srgb, var(--c-white) 92%, transparent);
+  --color-carousel-dot-ring: color-mix(in srgb, var(--c-ink) 10%, transparent);
+  --color-carousel-dot-shadow: color-mix(in srgb, var(--c-ink) 12%, transparent);
+
+  /* Удобные алиасы для существующих имён в компонентах */
+  --text: var(--c-ink);
+  --text-muted: var(--c-muted);
+  --bg: var(--c-sage);
+  --bg-card: var(--c-sage-pale);
+  --surface: var(--c-sage-mist);
+  --accent-green-deep: var(--c-green);
+  --accent-green: var(--c-green-soft);
+  --accent-blue: var(--c-teal-soft);
+  --accent-blue-deep: var(--c-teal);
+  --border: var(--color-border);
+  --shadow: var(--color-shadow);
+
+  --radius: 14px;
+  --radius-sm: 10px;
+  --font: "DM Sans", system-ui, sans-serif;
+}

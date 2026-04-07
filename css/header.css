@@ -1,0 +1,119 @@
+/* Шапка */
+.site-header {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--color-header-bg);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.site-header .inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.75rem;
+  max-width: 100%;
+}
+
+.site-header__contact {
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  background: var(--surface);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-header__contact:hover {
+  border-color: var(--accent-green);
+  color: var(--accent-green-deep);
+  text-decoration: none;
+}
+
+.site-header__contact:focus-visible {
+  outline: 2px solid var(--accent-green-deep);
+  outline-offset: 2px;
+}
+
+/* Скрыто по умолчанию: атрибут hidden + явный display, иначе flex ниже перебивает [hidden] */
+.site-header__booking {
+  display: none;
+}
+
+.site-header__booking:not([hidden]) {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  max-width: 100%;
+}
+
+.site-header__total {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.site-header__total-sum {
+  color: var(--accent-green-deep);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.site-header__book-btn {
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--c-white);
+  background: var(--accent-green-deep);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--accent-green-deep) 35%, transparent);
+  white-space: nowrap;
+}
+
+.site-header__book-btn:hover {
+  filter: brightness(1.06);
+}
+
+.site-header__book-btn:active {
+  transform: translateY(1px);
+}
+
+.site-header__book-btn:focus-visible {
+  outline: 2px solid var(--accent-green-deep);
+  outline-offset: 2px;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.logo:hover {
+  text-decoration: none;
+  color: var(--accent-green-deep);
+}

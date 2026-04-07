@@ -1,0 +1,211 @@
+/* Фильтр по датам на главной */
+.cabins-section {
+  padding-bottom: 0;
+}
+
+.cabins-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.cabins-filter-toggle {
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.cabins-filter-toggle:hover {
+  border-color: var(--accent-green);
+  background: var(--bg-card);
+}
+
+.cabins-filter-toggle[aria-expanded="true"] {
+  border-color: var(--accent-green-deep);
+  color: var(--accent-green-deep);
+}
+
+.cabins-filter-reset {
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.45rem 0.85rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cabins-filter-reset:hover {
+  color: var(--accent-green-deep);
+}
+
+.cabins-filter-status {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  flex: 1 1 100%;
+}
+
+@media (min-width: 600px) {
+  .cabins-filter-status {
+    flex: 1 1 auto;
+    min-width: 12rem;
+  }
+}
+
+.cabins-filter-panel {
+  margin-bottom: 1.75rem;
+}
+
+.cabins-filter-panel[hidden] {
+  display: none !important;
+}
+
+/* На всю ширину контейнера: слева сетка, справа текст */
+.calendar-block--filter {
+  width: 100%;
+  max-width: none;
+  padding: clamp(0.85rem, 2vw, 1.35rem) clamp(0.9rem, 2.5vw, 1.5rem);
+}
+
+.cabins-filter-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.35rem;
+  align-items: start;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .cabins-filter-layout {
+    grid-template-columns: minmax(0, min(38vw, 340px)) minmax(0, 1fr);
+    gap: clamp(1.25rem, 4vw, 2.75rem);
+    align-items: start;
+  }
+}
+
+@media (min-width: 900px) {
+  .cabins-filter-layout {
+    grid-template-columns: minmax(0, min(34vw, 380px)) minmax(0, 1fr);
+    gap: 2rem 3rem;
+  }
+}
+
+.cabins-filter-layout__calendar {
+  min-width: 0;
+  width: 100%;
+}
+
+.cabins-filter-layout__aside {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+@media (min-width: 640px) {
+  .cabins-filter-layout__aside {
+    gap: 0.85rem;
+    padding: 0.15rem 0;
+    max-width: 42rem;
+  }
+}
+
+.calendar-block--filter .cabins-filter-layout__aside h2 {
+  margin: 0;
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.cabins-filter-lead {
+  margin: 0;
+  font-size: clamp(0.86rem, 1.5vw, 0.95rem);
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.calendar-block--filter .cabins-filter-layout__aside .calendar-legend {
+  margin: 0.15rem 0 0;
+  gap: 0.65rem 1.25rem;
+  font-size: 0.8rem;
+}
+
+.calendar-block--filter .cabins-filter-layout__aside .calendar-summary {
+  margin: 0.35rem 0 0;
+  min-height: 3.6rem;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.86rem;
+  align-self: stretch;
+}
+
+.calendar-block--filter .cabins-filter-layout__aside .calendar-summary__inner {
+  min-height: 2.65rem;
+}
+
+.calendar-block--filter .cabins-filter-layout__aside .calendar-summary__row {
+  min-height: 1.28em;
+  line-height: 1.4;
+}
+
+/* Сетка только в левой колонке */
+.calendar-block--filter .cabins-filter-layout__calendar .calendar-nav {
+  margin-bottom: 0.45rem;
+}
+
+.calendar-block--filter .cabins-filter-layout__calendar .calendar-nav button {
+  padding: 0.28rem 0.55rem;
+  font-size: 0.82rem;
+}
+
+.calendar-block--filter .cabins-filter-layout__calendar .calendar-nav .month-label {
+  font-size: 0.88rem;
+}
+
+.calendar-block--filter .cabins-filter-layout__calendar .calendar-grid {
+  gap: 3px;
+  font-size: 0.76rem;
+}
+
+.calendar-block--filter .cabins-filter-layout__calendar .calendar-grid .weekday {
+  padding: 0.15rem 0;
+  font-size: 0.7rem;
+}
+
+.calendar-block--filter .cabins-filter-layout__calendar .calendar-grid .day {
+  aspect-ratio: 1.25;
+  font-size: 0.8rem;
+  border-radius: 5px;
+}
+
+.cabins-empty-filter {
+  margin: 0 0 1.5rem;
+  padding: 1.25rem 1.35rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.cabins-empty-filter[hidden] {
+  display: none !important;
+}
+
+.cabin-card--filtered-out {
+  display: none !important;
+}
