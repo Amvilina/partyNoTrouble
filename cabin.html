@@ -24,10 +24,21 @@
             rel="noopener noreferrer"
             >Связаться</a>
           <div class="site-header__booking" id="site-header-booking" hidden>
-            <p class="site-header__total" id="site-header-total" aria-live="polite"></p>
-            <button type="button" class="site-header__book-btn" id="site-header-book-btn">
-              Забронировать
-            </button>
+            <div class="site-header__booking-inner">
+              <p class="site-header__total" id="site-header-total" aria-live="polite"></p>
+              <div class="site-header__book-col">
+                <button type="button" class="site-header__book-btn" id="site-header-book-btn">
+                  Забронировать
+                </button>
+                <p class="site-header__consent">
+                  Нажимая «Забронировать», вы принимаете
+                  <button type="button" class="site-header__rules-trigger" data-stay-rules-open>
+                    правила проживания
+                  </button>
+                  .
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -79,6 +90,13 @@
             <span class="booking-modal__label">Комментарий</span>
             <textarea name="comment" rows="3" maxlength="2000" placeholder="По желанию"></textarea>
           </label>
+          <p class="booking-modal__consent">
+            Отправляя заявку, вы подтверждаете согласие с
+            <button type="button" class="booking-modal__rules-trigger" data-stay-rules-open>
+              правилами проживания
+            </button>
+            .
+          </p>
           <p class="booking-modal__err" id="booking-modal-err" hidden></p>
           <div class="booking-modal__actions">
             <button type="button" class="booking-modal__btn booking-modal__btn--ghost" data-booking-close>Отмена</button>
@@ -128,6 +146,38 @@
       </div>
     </div>
 
+    <div
+      id="stay-rules-modal"
+      class="booking-modal stay-rules-modal"
+      hidden
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="stay-rules-title"
+    >
+      <button
+        type="button"
+        class="booking-modal__backdrop"
+        tabindex="-1"
+        aria-label="Закрыть"
+        data-stay-rules-close
+      ></button>
+      <div class="booking-modal__dialog stay-rules-modal__dialog">
+        <div class="booking-modal__head">
+          <h2 id="stay-rules-title" class="booking-modal__title">Правила проживания</h2>
+          <button type="button" class="booking-modal__x" aria-label="Закрыть" data-stay-rules-close>
+            ×
+          </button>
+        </div>
+        <div class="stay-rules-modal__body" id="stay-rules-body"></div>
+        <div class="booking-modal__actions stay-rules-modal__foot">
+          <button type="button" class="booking-modal__btn booking-modal__btn--primary" data-stay-rules-close>
+            Понятно
+          </button>
+        </div>
+      </div>
+    </div>
+
     <footer class="site-footer">
       <div class="container">
         Разработано командой <a href="https://t.me/GCSSmanager" rel="noopener noreferrer" target="_blank">GCSS</a>
@@ -141,6 +191,36 @@
     <script src="js/phone-ru.js"></script>
     <script>
       (function () {
+        function escRulesText(s) {
+          return String(s == null ? "" : s)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+        }
+
+        function initStayRulesModal() {
+          var bodyEl = document.getElementById("stay-rules-body");
+          var titleEl = document.getElementById("stay-rules-title");
+          var r = window.STAY_RULES;
+          if (!bodyEl || !r) return;
+          if (titleEl && r.title) titleEl.textContent = r.title;
+          var sections = Array.isArray(r.sections) ? r.sections : [];
+          bodyEl.innerHTML = sections
+            .map(function (sec) {
+              return (
+                '<section class="stay-rules-modal__section"><h3 class="stay-rules-modal__section-title">' +
+                escRulesText(sec.title) +
+                '</h3><p class="stay-rules-modal__section-text">' +
+                escRulesText(sec.text) +
+                "</p></section>"
+              );
+            })
+            .join("");
+        }
+
+        initStayRulesModal();
+
         const params = new URLSearchParams(window.location.search);
         const id = params.get("id");
         const cabin = id && window.getCabinById ? window.getCabinById(id) : null;
@@ -407,9 +487,34 @@
         var bookingSubmit = document.getElementById("booking-modal-submit");
         var successModal = document.getElementById("booking-success-modal");
         var successMessageEl = document.getElementById("booking-success-message");
+        var stayRulesModal = document.getElementById("stay-rules-modal");
         var bookingPhoneInput = bookingForm ? bookingForm.querySelector('input[name="phone"]') : null;
         if (bookingPhoneInput && window.attachRuPhoneInput) {
           window.attachRuPhoneInput(bookingPhoneInput);
+        }
+
+        function syncModalScrollLock() {
+          var locked =
+            (bookingModal && !bookingModal.hidden) ||
+            (successModal && !successModal.hidden) ||
+            (stayRulesModal && !stayRulesModal.hidden);
+          document.body.classList.toggle("booking-modal-open", locked);
+        }
+
+        function openStayRulesModal() {
+          if (!stayRulesModal) return;
+          stayRulesModal.hidden = false;
+          stayRulesModal.setAttribute("aria-hidden", "false");
+          syncModalScrollLock();
+          var primary = stayRulesModal.querySelector(".stay-rules-modal__foot .booking-modal__btn");
+          if (primary) primary.focus();
+        }
+
+        function closeStayRulesModal() {
+          if (!stayRulesModal) return;
+          stayRulesModal.hidden = true;
+          stayRulesModal.setAttribute("aria-hidden", "true");
+          syncModalScrollLock();
         }
 
         function fmtBookingDate(d) {
@@ -458,7 +563,7 @@
           if (!successModal) return;
           successModal.hidden = true;
           successModal.setAttribute("aria-hidden", "true");
-          document.body.classList.remove("booking-modal-open");
+          syncModalScrollLock();
         }
 
         function openBookingSuccessModal(message) {
@@ -468,7 +573,7 @@
           successMessageEl.textContent = message;
           successModal.hidden = false;
           successModal.setAttribute("aria-hidden", "false");
-          document.body.classList.add("booking-modal-open");
+          syncModalScrollLock();
           var okBtn = successModal.querySelector(".booking-modal__success-actions .booking-modal__btn--primary");
           if (okBtn) okBtn.focus();
         }
@@ -482,7 +587,7 @@
           bookingForm.reset();
           bookingModal.hidden = false;
           bookingModal.setAttribute("aria-hidden", "false");
-          document.body.classList.add("booking-modal-open");
+          syncModalScrollLock();
           var first = bookingForm.querySelector('input[name="client_name"]');
           if (first) first.focus();
         }
@@ -491,7 +596,7 @@
           if (!bookingModal) return;
           bookingModal.hidden = true;
           bookingModal.setAttribute("aria-hidden", "true");
-          document.body.classList.remove("booking-modal-open");
+          syncModalScrollLock();
           if (bookingErr) bookingErr.hidden = true;
         }
 
@@ -513,10 +618,28 @@
           });
         }
 
+        if (stayRulesModal) {
+          stayRulesModal.querySelectorAll("[data-stay-rules-close]").forEach(function (el) {
+            el.addEventListener("click", closeStayRulesModal);
+          });
+        }
+
+        document.querySelectorAll("[data-stay-rules-open]").forEach(function (el) {
+          el.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openStayRulesModal();
+          });
+        });
+
         document.addEventListener("keydown", function (e) {
           if (e.key !== "Escape") return;
           if (successModal && !successModal.hidden) {
             closeBookingSuccessModal();
+            return;
+          }
+          if (stayRulesModal && !stayRulesModal.hidden) {
+            closeStayRulesModal();
             return;
           }
           if (!bookingModal || bookingModal.hidden) return;

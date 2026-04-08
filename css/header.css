@@ -105,6 +105,56 @@
   outline-offset: 2px;
 }
 
+.site-header__booking-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  max-width: 100%;
+}
+
+.site-header__book-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  max-width: 17rem;
+}
+
+.site-header__consent {
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.site-header__rules-trigger {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  color: var(--accent-green-deep);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.site-header__rules-trigger:hover {
+  color: var(--accent-green);
+}
+
+.site-header__rules-trigger:focus-visible {
+  outline: 2px solid var(--accent-green-deep);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 .logo {
   font-weight: 700;
   font-size: 1.15rem;
