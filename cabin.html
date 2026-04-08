@@ -98,10 +98,28 @@
             .
           </p>
           <p class="booking-modal__err" id="booking-modal-err" hidden></p>
+          <div class="booking-modal__fail" id="booking-modal-fail" hidden role="alert">
+            <p class="booking-modal__fail-text">
+              Упс, что-то пошло не так — заявка не отправилась. Напишите менеджеру, мы поможем с бронью.
+            </p>
+            <a
+              class="booking-modal__fail-contact"
+              id="booking-modal-fail-contact"
+              href="https://t.me/barbarianeccc"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Связаться</a>
+          </div>
           <div class="booking-modal__actions">
-            <button type="button" class="booking-modal__btn booking-modal__btn--ghost" data-booking-close>Отмена</button>
+            <button type="button" class="booking-modal__btn booking-modal__btn--ghost" data-booking-close>
+              Отмена
+            </button>
             <button type="submit" class="booking-modal__btn booking-modal__btn--primary" id="booking-modal-submit">
-              Забронировать
+              <span class="booking-modal__submit-label">Забронировать</span>
+              <span class="booking-modal__submit-busy" hidden>
+                <span class="booking-modal__spinner" aria-hidden="true"></span>
+                Отправка…
+              </span>
             </button>
           </div>
         </form>
@@ -485,12 +503,70 @@
         var bookingMeta = document.getElementById("booking-modal-meta");
         var bookingErr = document.getElementById("booking-modal-err");
         var bookingSubmit = document.getElementById("booking-modal-submit");
+        var bookingSubmitLabel = bookingSubmit ? bookingSubmit.querySelector(".booking-modal__submit-label") : null;
+        var bookingSubmitBusy = bookingSubmit ? bookingSubmit.querySelector(".booking-modal__submit-busy") : null;
+        var bookingFailEl = document.getElementById("booking-modal-fail");
+        var bookingFailContact = document.getElementById("booking-modal-fail-contact");
+        var bookingCancelBtn = bookingModal
+          ? bookingModal.querySelector(".booking-modal__actions .booking-modal__btn--ghost[data-booking-close]")
+          : null;
+        var bookingBackdropBtn = bookingModal ? bookingModal.querySelector(".booking-modal__backdrop") : null;
+        var bookingModalCloseX = bookingModal
+          ? bookingModal.querySelector(".booking-modal__head .booking-modal__x")
+          : null;
         var successModal = document.getElementById("booking-success-modal");
         var successMessageEl = document.getElementById("booking-success-message");
         var stayRulesModal = document.getElementById("stay-rules-modal");
         var bookingPhoneInput = bookingForm ? bookingForm.querySelector('input[name="phone"]') : null;
         if (bookingPhoneInput && window.attachRuPhoneInput) {
           window.attachRuPhoneInput(bookingPhoneInput);
+        }
+
+        function applyManagerContactUrl() {
+          var url =
+            (window.BOOKING_NOTIFY && window.BOOKING_NOTIFY.managerContactUrl) ||
+            "https://t.me/barbarianeccc";
+          if (bookingFailContact) bookingFailContact.href = url;
+        }
+        applyManagerContactUrl();
+
+        function isBookingFormSending() {
+          return !!(bookingForm && bookingForm.getAttribute("aria-busy") === "true");
+        }
+
+        function resetBookingSubmitUi() {
+          if (!bookingSubmit) return;
+          bookingSubmit.disabled = false;
+          bookingSubmit.removeAttribute("aria-busy");
+          if (bookingSubmitLabel) bookingSubmitLabel.hidden = false;
+          if (bookingSubmitBusy) bookingSubmitBusy.hidden = true;
+          if (bookingForm) bookingForm.removeAttribute("aria-busy");
+          if (bookingCancelBtn) bookingCancelBtn.disabled = false;
+          if (bookingBackdropBtn) bookingBackdropBtn.disabled = false;
+          if (bookingModalCloseX) bookingModalCloseX.disabled = false;
+          if (bookingModal) bookingModal.classList.remove("booking-modal--sending");
+        }
+
+        function setBookingSending(sending) {
+          if (!bookingSubmit) return;
+          bookingSubmit.disabled = sending;
+          bookingSubmit.setAttribute("aria-busy", sending ? "true" : "false");
+          if (bookingSubmitLabel) bookingSubmitLabel.hidden = sending;
+          if (bookingSubmitBusy) bookingSubmitBusy.hidden = !sending;
+          if (bookingForm) bookingForm.setAttribute("aria-busy", sending ? "true" : "false");
+          if (bookingCancelBtn) bookingCancelBtn.disabled = sending;
+          if (bookingBackdropBtn) bookingBackdropBtn.disabled = sending;
+          if (bookingModalCloseX) bookingModalCloseX.disabled = sending;
+          if (bookingModal) bookingModal.classList.toggle("booking-modal--sending", sending);
+        }
+
+        function hideBookingFailBanner() {
+          if (bookingFailEl) bookingFailEl.hidden = true;
+        }
+
+        function showBookingFailBanner() {
+          if (bookingErr) bookingErr.hidden = true;
+          if (bookingFailEl) bookingFailEl.hidden = false;
         }
 
         function syncModalScrollLock() {
@@ -567,6 +643,7 @@
         }
 
         function openBookingSuccessModal(message) {
+          resetBookingSubmitUi();
           if (bookingForm) bookingForm.reset();
           closeBookingModal();
           if (!successModal || !successMessageEl) return;
@@ -584,6 +661,9 @@
           if (successModal && !successModal.hidden) closeBookingSuccessModal();
           bookingMeta.textContent = buildBookingLetter();
           bookingErr.hidden = true;
+          hideBookingFailBanner();
+          resetBookingSubmitUi();
+          applyManagerContactUrl();
           bookingForm.reset();
           bookingModal.hidden = false;
           bookingModal.setAttribute("aria-hidden", "false");
@@ -594,10 +674,13 @@
 
         function closeBookingModal() {
           if (!bookingModal) return;
+          if (isBookingFormSending()) return;
           bookingModal.hidden = true;
           bookingModal.setAttribute("aria-hidden", "true");
           syncModalScrollLock();
           if (bookingErr) bookingErr.hidden = true;
+          hideBookingFailBanner();
+          resetBookingSubmitUi();
         }
 
         if (headerBookBtn) {
@@ -643,6 +726,7 @@
             return;
           }
           if (!bookingModal || bookingModal.hidden) return;
+          if (isBookingFormSending()) return;
           closeBookingModal();
         });
 
@@ -650,6 +734,7 @@
           bookingForm.addEventListener("submit", function (e) {
             e.preventDefault();
             bookingErr.hidden = true;
+            hideBookingFailBanner();
             var fd = new FormData(bookingForm);
             var name = String(fd.get("client_name") || "").trim();
             var phoneDisplay = String(fd.get("phone") || "").trim();
@@ -689,7 +774,7 @@
                 bookingErr.hidden = false;
                 return;
               }
-              bookingSubmit.disabled = true;
+              setBookingSending(true);
               fetch("https://api.web3forms.com/submit", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -709,18 +794,14 @@
                   if (data && data.success) {
                     openBookingSuccessModal("Заявка отправлена. Менеджер свяжется с вами.");
                   } else {
-                    bookingErr.textContent =
-                      (data && data.message) ||
-                      "Не удалось отправить. Попробуйте позже или напишите в Telegram.";
-                    bookingErr.hidden = false;
+                    showBookingFailBanner();
                   }
                 })
                 .catch(function () {
-                  bookingErr.textContent = "Ошибка сети. Попробуйте позже.";
-                  bookingErr.hidden = false;
+                  showBookingFailBanner();
                 })
                 .then(function () {
-                  bookingSubmit.disabled = false;
+                  setBookingSending(false);
                 });
               return;
             }

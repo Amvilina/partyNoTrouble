@@ -30,6 +30,19 @@ body.booking-modal-open {
   cursor: pointer;
 }
 
+.booking-modal__backdrop:disabled {
+  cursor: wait;
+}
+
+.booking-modal__x:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.booking-modal--sending .booking-modal__dialog {
+  cursor: wait;
+}
+
 .booking-modal__dialog {
   position: relative;
   z-index: 1;
@@ -141,6 +154,87 @@ body.booking-modal-open {
   font-weight: 600;
 }
 
+.booking-modal__fail {
+  margin: 0;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, #b42318 28%, var(--border));
+  background: color-mix(in srgb, #b42318 6%, var(--surface));
+}
+
+.booking-modal__fail-text {
+  margin: 0 0 0.65rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.booking-modal__fail-contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  background: var(--surface);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.booking-modal__fail-contact:hover {
+  border-color: var(--accent-green);
+  color: var(--accent-green-deep);
+  text-decoration: none;
+}
+
+.booking-modal__fail-contact:focus-visible {
+  outline: 2px solid var(--accent-green-deep);
+  outline-offset: 2px;
+}
+
+.booking-modal__form[aria-busy="true"] .booking-modal__field {
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.booking-modal__form[aria-busy="true"] .booking-modal__consent,
+.booking-modal__form[aria-busy="true"] .booking-modal__rules-trigger {
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+/* Не задавать display: inline-flex без учёта [hidden] — иначе перебивается скрытие по атрибуту hidden */
+.booking-modal__submit-busy {
+  display: none;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.booking-modal__submit-busy:not([hidden]) {
+  display: inline-flex;
+}
+
+.booking-modal__spinner {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid color-mix(in srgb, var(--c-white) 32%, transparent);
+  border-top-color: var(--c-white);
+  border-radius: 50%;
+  animation: booking-modal-spin 0.7s linear infinite;
+}
+
+@keyframes booking-modal-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .booking-modal__ok {
   margin: 0;
   font-size: 0.88rem;
@@ -193,7 +287,18 @@ body.booking-modal-open {
   color: var(--accent-green-deep);
 }
 
+.booking-modal__btn--ghost:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .booking-modal__btn--primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.35rem;
+  min-width: 8.5rem;
   color: var(--c-white);
   background: var(--accent-green-deep);
   box-shadow: 0 2px 10px color-mix(in srgb, var(--accent-green-deep) 35%, transparent);

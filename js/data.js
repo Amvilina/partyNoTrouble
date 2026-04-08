@@ -160,6 +160,8 @@ window.BOOKING_EXTRAS = [
 window.BOOKING_NOTIFY = {
   web3formsAccessKey: "a015dbfd-6282-49cf-a7e8-394afe434f48",
   managerEmail: "",
+  /** Ссылка для кнопки «Связаться» при ошибке отправки заявки и в шапке (при желании задайте один URL). */
+  managerContactUrl: "https://t.me/barbarianeccc",
 };
 
 /**
