@@ -151,6 +151,7 @@
 }
 
 .cabin-service {
+  position: relative;
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
@@ -180,10 +181,101 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 0.35rem 0.75rem;
+  min-width: 0;
+}
+
+.cabin-service__title-block {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.35rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .cabin-service__title {
   color: var(--text);
+}
+
+.cabin-service__info-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.cabin-service__info-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-muted, #5c6670);
+  font-size: 0.62rem;
+  font-weight: 700;
+  font-style: italic;
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1;
+  cursor: help;
+  vertical-align: middle;
+  flex-shrink: 0;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.cabin-service__info-btn:hover,
+.cabin-service__info-btn:focus-visible {
+  border-color: var(--accent-green-deep);
+  color: var(--accent-green-deep);
+  outline: none;
+}
+
+.cabin-service__info-popover {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 0.35rem);
+  z-index: 5;
+  min-width: 11rem;
+  max-width: min(17.5rem, calc(100vw - 2rem));
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 8px 24px var(--shadow);
+  font-size: 0.8rem;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.45;
+  color: var(--text);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.15s ease,
+    visibility 0.15s ease;
+}
+
+.cabin-service__info-wrap:hover .cabin-service__info-popover,
+.cabin-service__info-wrap:focus-within .cabin-service__info-popover,
+.cabin-service__info-wrap.is-open .cabin-service__info-popover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+@media (hover: none) {
+  .cabin-service__info-wrap:not(.is-open) .cabin-service__info-popover {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
 }
 
 .cabin-service__price {

@@ -213,6 +213,10 @@
         const extrasList = window.BOOKING_EXTRAS || [];
         const extrasHtml = extrasList
           .map(function (ex, ix) {
+            var infoText =
+              ex.info != null && String(ex.info).trim() !== ""
+                ? String(ex.info).trim()
+                : "Подробности уточните у менеджера при бронировании.";
             return (
               '<label class="cabin-service">' +
               '<input type="checkbox" name="extra-' +
@@ -225,9 +229,19 @@
               ex.price +
               '" autocomplete="off" />' +
               '<span class="cabin-service__row">' +
+              '<span class="cabin-service__title-block">' +
               '<span class="cabin-service__title">' +
               escHtml(ex.title) +
               "</span>" +
+              '<span class="cabin-service__info-wrap">' +
+              '<button type="button" class="cabin-service__info-btn" aria-label="' +
+              escAttr("Подробнее: " + ex.title) +
+              '" aria-expanded="false">' +
+              '<span class="cabin-service__info-icon" aria-hidden="true">i</span>' +
+              "</button>" +
+              '<span class="cabin-service__info-popover" role="tooltip">' +
+              escHtml(infoText) +
+              "</span></span></span>" +
               '<span class="cabin-service__price">+' +
               ex.price.toLocaleString("ru-RU") +
               " " +
@@ -314,6 +328,41 @@
         `;
 
         if (window.initAllImageCarousels) window.initAllImageCarousels(root);
+
+        var servicesListForInfo = root.querySelector("#cabin-services-list");
+        function closeAllCabinExtraInfos() {
+          if (!servicesListForInfo) return;
+          servicesListForInfo.querySelectorAll(".cabin-service__info-wrap.is-open").forEach(function (w) {
+            w.classList.remove("is-open");
+            var b = w.querySelector(".cabin-service__info-btn");
+            if (b) b.setAttribute("aria-expanded", "false");
+          });
+        }
+        if (servicesListForInfo) {
+          servicesListForInfo.addEventListener("click", function (e) {
+            var btn = e.target.closest(".cabin-service__info-btn");
+            if (!btn) return;
+            e.preventDefault();
+            e.stopPropagation();
+            var wrap = btn.closest(".cabin-service__info-wrap");
+            if (!wrap) return;
+            var wasOpen = wrap.classList.contains("is-open");
+            closeAllCabinExtraInfos();
+            if (!wasOpen) {
+              wrap.classList.add("is-open");
+              btn.setAttribute("aria-expanded", "true");
+            }
+          });
+        }
+        document.addEventListener("click", function (e) {
+          if (!root.contains(e.target) || e.target.closest(".cabin-service__info-wrap")) return;
+          closeAllCabinExtraInfos();
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key !== "Escape") return;
+          if (!root.querySelector(".cabin-service__info-wrap.is-open")) return;
+          closeAllCabinExtraInfos();
+        });
 
         const headerBookingEl = document.getElementById("site-header-booking");
         const headerTotalEl = document.getElementById("site-header-total");
